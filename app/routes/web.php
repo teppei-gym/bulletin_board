@@ -20,6 +20,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware('auth')->group(function () {
-    Route::resource('post', 'PostController');
+    Route::resource('post', 'PostController', ['only' => ['index', 'create', 'edit', 'update', 'store', 'destroy']]);
     Route::get('/home', 'HomeController@index')->name('home');
 });
