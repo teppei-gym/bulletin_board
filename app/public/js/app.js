@@ -49715,6 +49715,18 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -49743,6 +49755,49 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 var app = new Vue({
   el: '#app'
 });
+var favorite = document.querySelectorAll('.js-favorite');
+var csrf = document.getElementsByName('csrf-token')[0].content;
+
+for (var _i = 0, _arr = _toConsumableArray(favorite); _i < _arr.length; _i++) {
+  var el = _arr[_i];
+  el.addEventListener('click', function (e) {
+    var _this = this;
+
+    console.log(_this);
+    var countSpan = e.target.nextElementSibling;
+    var userId = countSpan.dataset.userId;
+    var postId = countSpan.dataset.postId;
+    ajax(url, {
+      userId: userId,
+      postId: postId
+    }).then(function (count) {
+      console.log(count);
+      countSpan.innerHTML = "  ".concat(count);
+
+      _this.classList.toggle('text-danger');
+    });
+  });
+}
+
+var url = document.getElementsByName('favorite-url')[0].content;
+
+function ajax(url, _ref) {
+  var userId = _ref.userId,
+      postId = _ref.postId;
+  return new Promise(function (resolve) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+    xhr.setRequestHeader('X-CSRF-token', csrf);
+    xhr.send("user_id=".concat(userId, "&post_id=").concat(postId));
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        resolve(xhr.responseText);
+      }
+    };
+  });
+}
 
 /***/ }),
 

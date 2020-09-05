@@ -4,19 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Favorite extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'content'
+        'user_id', 'post_id'
     ];
 
     public function user()
     {
         return $this->belongsTo('App\User');
-    }
-
-    public function favorites()
-    {
-        return $this->hasMany('App\Models\Favorite');
     }
 }

@@ -30,3 +30,43 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 const app = new Vue({
     el: '#app',
 });
+
+const favorite = document.querySelectorAll('.js-favorite');
+const csrf = document.getElementsByName('csrf-token')[0].content;
+
+for (let el of [...favorite]) {
+    el.addEventListener('click', function (e) {
+        const _this = this;
+        console.log(_this);
+        const countSpan = e.target.nextElementSibling;
+        const userId = countSpan.dataset.userId;
+        const postId = countSpan.dataset.postId;
+
+        ajax(url, { userId: userId, postId: postId }).then(function (count) {
+            console.log(count);
+            countSpan.innerHTML = `  ${count}`;
+            _this.classList.toggle('text-danger');
+        });
+    })
+}
+
+const url = document.getElementsByName('favorite-url')[0].content;
+
+function ajax(url, { userId, postId }) {
+    return new Promise(function (resolve) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', url);
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8')
+        xhr.setRequestHeader('X-CSRF-token', csrf);
+
+        xhr.send(`user_id=${userId}&post_id=${postId}`);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                resolve(xhr.responseText);
+            }
+        }
+    })
+}
+

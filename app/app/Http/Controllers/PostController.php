@@ -7,6 +7,8 @@ use App\Models\Post;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PostRequest;
+use App\Models\Favorite;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -18,8 +20,9 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::with('user')->orderBy('created_at', 'DESC')->get();
+        $userId = Auth::id();
 
-        return view('post.index', compact('posts'));
+        return view('post.index', compact('posts', 'userId'));
     }
 
     /**
@@ -97,6 +100,13 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::transaction(function () use ($id) {
+            $post = Post::find($id);
+
+            $post->favorites()->delete();
+            $post->delete();
+        });
+
+        return redirect()->route('post.index');
     }
 }

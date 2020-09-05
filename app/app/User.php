@@ -39,6 +39,11 @@ class User extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany('App\Moels\Post');
+        return $this->hasMany('App\Modles\Post');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany('App\Models\Favorite');
     }
 }
